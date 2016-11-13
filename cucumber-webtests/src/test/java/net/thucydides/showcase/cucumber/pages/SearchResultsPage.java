@@ -42,13 +42,14 @@ public class SearchResultsPage extends PageObject {
 
     //https://github.com/serenity-bdd/serenity-core/issues/459
     public ListingItem selectListing(int listingNumber) {
-    	String name = getDriver().findElements(By.xpath("//div[@id='content']//div[@class='clearfix']//div[1]/a//div[contains(@class,'card-title')]")).get(listingNumber).getText();
-    	double price = Double.parseDouble( getDriver().findElements(By.xpath("//div[@id='content']//div[@class='clearfix']//div[1]/a//span[contains(@class,'currency text')]")).get(listingNumber).getText());
+    	List<WebElement> listingCards = getDriver().findElements(By.xpath("//div[@id='content']//div[@class='clearfix']/div[not(contains(@class,'hide'))]/div/a"));
+    	String name = listingCards.get(listingNumber).findElement(By.xpath(".//div[contains(@class,'card-title')]")).getText();
+    	double price = Double.parseDouble(listingCards.get(listingNumber).findElement(By.xpath(".//span[contains(@class,'currency text')]")).getText());
     	
-    	List<WebElement> listingCards = getDriver().findElements(By.cssSelector(".listing-card:nth-child(" + listingNumber + ")"));
-        WebElement listingCard = listingCards.get(1);
+    	// List<WebElement> listingCards = getDriver().findElements(By.cssSelector(".listing-card:nth-child(" + listingNumber + ")"));
+        WebElement listingCard = listingCards.get(listingNumber);
         
-        listingCard.findElement(By.tagName("a")).click();
+        listingCard.click();
         waitForTextToAppear("Item details");
 
         return new ListingItem(name,price);
